@@ -81,5 +81,5 @@ backups/
 # Local development
 .local/
 
-# Claude plans (optional - can remove if you want to track them)
-.claude/plans/
+# Claude files
+.claude/
