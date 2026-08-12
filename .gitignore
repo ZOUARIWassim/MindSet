@@ -46,8 +46,8 @@ Thumbs.db
 .c9/
 *.launch
 .settings/
+.vscode/
 .vscode-test/
-# NOTE: .vscode/ is NOT ignored - we want to commit VS Code settings
 
 # Docker volumes and data
 docker-data/
