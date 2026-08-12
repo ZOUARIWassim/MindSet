@@ -1,0 +1,85 @@
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# Testing
+/coverage
+
+# Production builds
+/build
+/dist
+/.next/
+/out/
+
+# Environment variables (KEEP .env.example)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.log
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+.vscode-test/
+# NOTE: .vscode/ is NOT ignored - we want to commit VS Code settings
+
+# Docker volumes and data
+docker-data/
+mongodb-data/
+
+# Backup files
+*.bak
+*.backup
+backups/*.json
+backups/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Build artifacts
+*.tsbuildinfo
+
+# Package manager
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# AWS
+.aws/credentials
+.aws/config
+
+# Local development
+.local/
+
+# Claude plans (optional - can remove if you want to track them)
+.claude/plans/
