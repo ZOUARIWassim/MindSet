@@ -75,6 +75,7 @@ backups/
 .pnp.*
 
 # AWS
+.aws/
 .aws/credentials
 .aws/config
 
