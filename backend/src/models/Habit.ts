@@ -13,7 +13,7 @@ export interface IHabit extends Document {
   target?: number;
   unit?: string;
   frequency: HabitFrequency;
-  reminderTime?: Date;
+  reminderTime?: string;
   active: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -67,7 +67,8 @@ const habitSchema = new Schema<IHabit>(
       default: 'daily'
     },
     reminderTime: {
-      type: Date
+      type: String,
+      trim: true
     },
     active: {
       type: Boolean,

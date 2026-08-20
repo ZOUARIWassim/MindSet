@@ -10,6 +10,7 @@ import {
   logHabitEntry,
   getHabitEntries,
   getTodayEntries,
+  getEntriesByDateRange,
   getHabitStats
 } from '../controllers/habitController';
 
@@ -51,6 +52,13 @@ router.get('/', getUserHabits);
 
 // Get today's entries
 router.get('/entries/today', getTodayEntries);
+
+// Get entries for a date range (calendar view)
+router.get('/entries/range',
+  query('startDate').isISO8601().withMessage('startDate must be ISO8601'),
+  query('endDate').isISO8601().withMessage('endDate must be ISO8601'),
+  getEntriesByDateRange
+);
 
 // Create a new habit
 router.post('/', createHabitValidation, createHabit);

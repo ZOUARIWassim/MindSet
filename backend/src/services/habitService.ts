@@ -113,6 +113,14 @@ export const habitService = {
     }).populate('habitId');
   },
 
+  // Get all entries for a user within a date range (for calendar view)
+  getEntriesByDateRange: async (userId: string, startDate: Date, endDate: Date): Promise<IHabitEntry[]> => {
+    return await HabitEntry.find({
+      userId: new mongoose.Types.ObjectId(userId),
+      date: { $gte: startDate, $lte: endDate }
+    }).populate('habitId').sort({ date: 1 });
+  },
+
   // Get habit completion statistics
   getHabitStats: async (habitId: string, userId: string, days: number = 30) => {
     const endDate = new Date();
