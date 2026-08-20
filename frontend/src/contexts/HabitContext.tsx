@@ -10,6 +10,7 @@ interface HabitContextType {
   refreshHabits: () => Promise<void>;
   toggleHabit: (habitId: string) => Promise<void>;
   createHabit: (data: any) => Promise<Habit>;
+  updateHabit: (habitId: string, data: Partial<Habit>) => Promise<void>;
   deleteHabit: (habitId: string) => Promise<void>;
 }
 
@@ -88,6 +89,16 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
   };
 
+  const updateHabit = async (habitId: string, data: Partial<Habit>) => {
+    try {
+      const updated = await habitService.updateHabit(habitId, data);
+      setHabits((prev) => prev.map((h) => h._id === habitId ? updated : h));
+    } catch (error) {
+      console.error('Error updating habit:', error);
+      throw error;
+    }
+  };
+
   const deleteHabit = async (habitId: string) => {
     try {
       await habitService.deleteHabit(habitId);
@@ -112,6 +123,7 @@ export const HabitProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         refreshHabits,
         toggleHabit,
         createHabit,
+        updateHabit,
         deleteHabit
       }}
     >
