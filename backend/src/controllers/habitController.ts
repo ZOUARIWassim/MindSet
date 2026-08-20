@@ -160,6 +160,30 @@ export const getHabitEntries = async (req: AuthRequest, res: Response): Promise<
   }
 };
 
+// Get all entries for a date range (calendar view)
+export const getEntriesByDateRange = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.userId!;
+    const { startDate, endDate } = req.query;
+
+    if (!startDate || !endDate) {
+      res.status(400).json({ error: 'startDate and endDate query parameters are required' });
+      return;
+    }
+
+    const start = new Date(startDate as string);
+    start.setUTCHours(0, 0, 0, 0);
+    const end = new Date(endDate as string);
+    end.setUTCHours(23, 59, 59, 999);
+
+    const entries = await habitService.getEntriesByDateRange(userId, start, end);
+    res.status(200).json({ entries });
+  } catch (error) {
+    console.error('Get entries by date range error:', error);
+    res.status(500).json({ error: 'Server error fetching entries' });
+  }
+};
+
 // Get all entries for today
 export const getTodayEntries = async (req: AuthRequest, res: Response): Promise<void> => {
   try {

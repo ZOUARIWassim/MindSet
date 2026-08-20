@@ -61,6 +61,17 @@ export const habitService = {
     return response.data.entries;
   },
 
+  // Get all entries in a date range (for calendar view)
+  getEntriesByDateRange: async (startDate: Date, endDate: Date): Promise<HabitEntry[]> => {
+    const response = await api.get<{ entries: HabitEntry[] }>('/habits/entries/range', {
+      params: {
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString()
+      }
+    });
+    return response.data.entries;
+  },
+
   // Get today's entries
   getTodayEntries: async (): Promise<HabitEntry[]> => {
     const response = await api.get<{ entries: HabitEntry[] }>('/habits/entries/today');
