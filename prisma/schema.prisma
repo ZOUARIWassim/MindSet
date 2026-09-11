@@ -1,0 +1,245 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Importance {
+  low
+  medium
+  high
+}
+
+enum GoalStatus {
+  active
+  achieved
+  paused
+  abandoned
+}
+
+enum HabitStatus {
+  active
+  paused
+  completed
+  abandoned
+}
+
+enum HabitEntryStatus {
+  completed
+  minimum
+  partial
+  missed
+  skipped_intentionally
+}
+
+enum InsightKind {
+  context_correlation
+  time_of_day_comparison
+  declining_system
+  metric_correlation
+  minimum_reliance
+}
+
+enum HabitCapabilityKind {
+  food_tracker
+  reading_assistant
+  training
+  focus
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  timezone     String   @default("UTC")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  identities  Identity[]
+  checkIns    CheckIn[]
+  insights    Insight[]
+  experiments Experiment[]
+}
+
+model Identity {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  statement   String
+  description String?
+  order       Int       @default(0)
+  archivedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  goals   Goal[]
+  systems HabitSystem[]
+
+  @@index([userId])
+  @@index([userId, archivedAt])
+}
+
+model Goal {
+  id           String     @id @default(cuid())
+  identityId   String
+  identity     Identity   @relation(fields: [identityId], references: [id], onDelete: Cascade)
+  name         String
+  description  String?
+  targetValue  Float?
+  currentValue Float?
+  unit         String?
+  deadline     DateTime?  @db.Date
+  importance   Importance @default(medium)
+  status       GoalStatus @default(active)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  systems HabitSystem[]
+  habits  Habit[]
+
+  @@index([identityId])
+  @@index([identityId, status])
+}
+
+model HabitSystem {
+  id          String    @id @default(cuid())
+  identityId  String
+  identity    Identity  @relation(fields: [identityId], references: [id], onDelete: Cascade)
+  goalId      String?
+  goal        Goal?     @relation(fields: [goalId], references: [id], onDelete: SetNull)
+  name        String
+  description String?
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  habits      Habit[]
+  experiments Experiment[]
+
+  @@index([identityId])
+  @@index([goalId])
+}
+
+model Habit {
+  id              String      @id @default(cuid())
+  systemId        String
+  system          HabitSystem @relation(fields: [systemId], references: [id], onDelete: Cascade)
+  goalId          String?
+  goal            Goal?       @relation(fields: [goalId], references: [id], onDelete: SetNull)
+  name            String
+  behavior        String
+  frequency       Json
+  targetValue     Float?
+  minimumValue    Float?
+  unit            String?
+  preferredTime   String?
+  contextLocation String?
+  contextTrigger  String?
+  difficulty      Int
+  reason          String?
+  status          HabitStatus @default(active)
+  createdAt       DateTime    @default(now())
+  archivedAt      DateTime?
+
+  entries      HabitEntry[]
+  capabilities HabitCapability[]
+
+  @@index([systemId])
+  @@index([goalId])
+  @@index([systemId, status])
+}
+
+model CheckIn {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      DateTime @db.Date
+  energy    Int
+  mood      Int
+  stress    Int
+  focus     Int
+  note      String?
+  context   Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  entries HabitEntry[]
+
+  @@unique([userId, date])
+  @@index([userId])
+}
+
+model HabitEntry {
+  id          String           @id @default(cuid())
+  checkInId   String
+  checkIn     CheckIn          @relation(fields: [checkInId], references: [id], onDelete: Cascade)
+  habitId     String
+  habit       Habit            @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  status      HabitEntryStatus
+  value       Float?
+  unit        String?
+  note        String?
+  performedAt DateTime?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@unique([checkInId, habitId])
+  @@index([habitId])
+  @@index([checkInId])
+}
+
+model Insight {
+  id          String      @id @default(cuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind        InsightKind
+  title       String
+  body        String
+  evidence    Json
+  periodStart DateTime    @db.Date
+  periodEnd   DateTime    @db.Date
+  dismissedAt DateTime?
+  createdAt   DateTime    @default(now())
+
+  @@index([userId, kind])
+  @@index([userId, dismissedAt])
+}
+
+// Scaffolded, not built on yet
+model Experiment {
+  id             String       @id @default(cuid())
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  habitSystemId  String?
+  habitSystem    HabitSystem? @relation(fields: [habitSystemId], references: [id], onDelete: SetNull)
+  hypothesis     String
+  currentSystem  String
+  proposedChange String
+  metric         String
+  durationDays   Int
+  startedAt      DateTime?
+  result         Json?
+  conclusion     String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([userId])
+}
+
+model HabitCapability {
+  id        String              @id @default(cuid())
+  habitId   String
+  habit     Habit               @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  kind      HabitCapabilityKind
+  config    Json
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+
+  @@unique([habitId, kind])
+  @@index([habitId])
+}
