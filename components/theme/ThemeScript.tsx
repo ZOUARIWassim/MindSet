@@ -13,5 +13,10 @@ const THEME_INIT_SCRIPT = `
 `;
 
 export function ThemeScript() {
-  return <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />;
+  return (
+    <script
+      suppressHydrationWarning
+      dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }}
+    />
+  );
 }
