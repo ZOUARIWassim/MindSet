@@ -26,7 +26,7 @@ export function Checkbox({
       )}
     >
       <RadixCheckbox.Indicator className="text-white">
-        <Check size={14} />
+        <Check size={14} aria-hidden="true" />
       </RadixCheckbox.Indicator>
     </RadixCheckbox.Root>
   );

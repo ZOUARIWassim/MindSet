@@ -112,6 +112,7 @@ export function DueHabitCard({
               onChange={(e) => setValue(e.target.value)}
               onBlur={commitValue}
               placeholder={habit.minimumValue?.toString() ?? "0"}
+              aria-label={`Value in ${habit.unit}`}
               className="w-16 rounded-lg border border-border bg-surface px-2 py-1 text-xs text-text-primary outline-none focus:border-accent"
             />
             <span className="text-xs text-text-muted">{habit.unit}</span>

@@ -30,7 +30,7 @@ export function Select({
       >
         <RadixSelect.Value />
         <RadixSelect.Icon>
-          <ChevronDown size={14} className="text-text-muted" />
+          <ChevronDown size={14} className="text-text-muted" aria-hidden="true" />
         </RadixSelect.Icon>
       </RadixSelect.Trigger>
       <RadixSelect.Portal>
@@ -44,7 +44,7 @@ export function Select({
               >
                 <RadixSelect.ItemText>{option.label}</RadixSelect.ItemText>
                 <RadixSelect.ItemIndicator>
-                  <Check size={14} className="text-accent" />
+                  <Check size={14} className="text-accent" aria-hidden="true" />
                 </RadixSelect.ItemIndicator>
               </RadixSelect.Item>
             ))}

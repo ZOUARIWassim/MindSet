@@ -142,12 +142,14 @@ export function IdentitiesStep({ presets }: { presets: IdentityPreset[] }) {
                 value={identity.name}
                 onChange={(e) => updateCustomIdentity(index, "name", e.target.value)}
                 placeholder="e.g. Early Riser"
+                aria-label="Identity name"
                 className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary outline-none focus:border-accent"
               />
               <input
                 value={identity.statement}
                 onChange={(e) => updateCustomIdentity(index, "statement", e.target.value)}
                 placeholder="I am someone who..."
+                aria-label="Identity statement"
                 className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary outline-none focus:border-accent"
               />
             </div>

@@ -91,12 +91,14 @@ export function HabitActions({ habit }: { habit: EditableHabit }) {
               value={form.name}
               onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
               placeholder="Name"
+              aria-label="Name"
               className="rounded-lg border border-border bg-surface-secondary px-3 py-2 text-sm text-text-primary outline-none focus:border-accent"
             />
             <input
               value={form.behavior}
               onChange={(e) => setForm((f) => ({ ...f, behavior: e.target.value }))}
               placeholder="Behavior"
+              aria-label="Behavior"
               className="rounded-lg border border-border bg-surface-secondary px-3 py-2 text-sm text-text-primary outline-none focus:border-accent"
             />
             <div className="grid grid-cols-3 gap-2">
@@ -105,6 +107,7 @@ export function HabitActions({ habit }: { habit: EditableHabit }) {
                 value={form.targetValue}
                 onChange={(e) => setForm((f) => ({ ...f, targetValue: e.target.value }))}
                 placeholder="Target"
+                aria-label="Target value"
                 className="rounded-lg border border-border bg-surface-secondary px-3 py-2 text-sm text-text-primary outline-none focus:border-accent"
               />
               <input
@@ -112,12 +115,14 @@ export function HabitActions({ habit }: { habit: EditableHabit }) {
                 value={form.minimumValue}
                 onChange={(e) => setForm((f) => ({ ...f, minimumValue: e.target.value }))}
                 placeholder="Minimum"
+                aria-label="Minimum value"
                 className="rounded-lg border border-border bg-surface-secondary px-3 py-2 text-sm text-text-primary outline-none focus:border-accent"
               />
               <input
                 value={form.unit}
                 onChange={(e) => setForm((f) => ({ ...f, unit: e.target.value }))}
                 placeholder="Unit"
+                aria-label="Unit"
                 className="rounded-lg border border-border bg-surface-secondary px-3 py-2 text-sm text-text-primary outline-none focus:border-accent"
               />
             </div>
@@ -125,23 +130,30 @@ export function HabitActions({ habit }: { habit: EditableHabit }) {
               type="time"
               value={form.preferredTime}
               onChange={(e) => setForm((f) => ({ ...f, preferredTime: e.target.value }))}
+              aria-label="Preferred time"
               className="rounded-lg border border-border bg-surface-secondary px-3 py-2 text-sm text-text-primary outline-none focus:border-accent"
             />
             <input
               value={form.contextTrigger}
               onChange={(e) => setForm((f) => ({ ...f, contextTrigger: e.target.value }))}
               placeholder="Cue"
+              aria-label="Cue"
               className="rounded-lg border border-border bg-surface-secondary px-3 py-2 text-sm text-text-primary outline-none focus:border-accent"
             />
             <div className="flex flex-col gap-1.5">
               <label className="text-sm text-text-secondary">Difficulty: {form.difficulty}/5</label>
-              <Slider value={form.difficulty} onValueChange={(value) => setForm((f) => ({ ...f, difficulty: value }))} />
+              <Slider
+                value={form.difficulty}
+                onValueChange={(value) => setForm((f) => ({ ...f, difficulty: value }))}
+                ariaLabel="Difficulty"
+              />
             </div>
             <textarea
               value={form.reason}
               onChange={(e) => setForm((f) => ({ ...f, reason: e.target.value }))}
               rows={2}
               placeholder="Reason"
+              aria-label="Reason"
               className="rounded-lg border border-border bg-surface-secondary px-3 py-2 text-sm text-text-primary outline-none focus:border-accent"
             />
             {error && <p className="text-sm text-red-500">{error}</p>}

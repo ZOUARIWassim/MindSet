@@ -22,8 +22,8 @@ export function ThemeToggle() {
         "hover:text-text-primary transition-colors",
       )}
     >
-      <Sun size={16} className="hidden dark:block" />
-      <Moon size={16} className="block dark:hidden" />
+      <Sun size={16} className="hidden dark:block" aria-hidden="true" />
+      <Moon size={16} className="block dark:hidden" aria-hidden="true" />
     </button>
   );
 }

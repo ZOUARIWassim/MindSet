@@ -19,8 +19,8 @@ export function DialogContent({
       <RadixDialog.Content className="fixed left-1/2 top-1/2 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl border border-border bg-surface p-5 shadow-lg">
         <div className="mb-4 flex items-center justify-between">
           <RadixDialog.Title className="text-lg font-semibold text-text-primary">{title}</RadixDialog.Title>
-          <RadixDialog.Close className="text-text-muted hover:text-text-primary">
-            <X size={18} />
+          <RadixDialog.Close aria-label="Close" className="text-text-muted hover:text-text-primary">
+            <X size={18} aria-hidden="true" />
           </RadixDialog.Close>
         </div>
         {children}

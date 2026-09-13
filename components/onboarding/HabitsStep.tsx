@@ -157,12 +157,14 @@ export function HabitsStep({
               value={row.name}
               onChange={(e) => updateRow(index, { name: e.target.value })}
               placeholder="Name (e.g. Morning Run)"
+              aria-label="Habit name"
               className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary outline-none focus:border-accent"
             />
             <input
               value={row.behavior}
               onChange={(e) => updateRow(index, { behavior: e.target.value })}
               placeholder="What exactly will you do?"
+              aria-label="Behavior"
               className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary outline-none focus:border-accent"
             />
 
@@ -180,6 +182,7 @@ export function HabitsStep({
                   max={7}
                   value={row.n}
                   onChange={(e) => updateRow(index, { n: Number(e.target.value) })}
+                  aria-label="Times per week"
                   className="w-20 rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary outline-none focus:border-accent"
                 />
               )}
@@ -194,6 +197,7 @@ export function HabitsStep({
                 value={row.targetValue}
                 onChange={(e) => updateRow(index, { targetValue: e.target.value })}
                 placeholder="Target"
+                aria-label="Target value"
                 className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary outline-none focus:border-accent"
               />
               <input
@@ -201,19 +205,25 @@ export function HabitsStep({
                 value={row.minimumValue}
                 onChange={(e) => updateRow(index, { minimumValue: e.target.value })}
                 placeholder="Minimum *"
+                aria-label="Minimum value"
+                required
                 className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary outline-none focus:border-accent"
               />
               <input
                 value={row.unit}
                 onChange={(e) => updateRow(index, { unit: e.target.value })}
                 placeholder="Unit (pages, min)"
+                aria-label="Unit"
                 className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary outline-none focus:border-accent"
               />
             </div>
 
             <div className="flex items-center gap-3">
-              <label className="text-sm text-text-secondary">Preferred time</label>
+              <label htmlFor={`preferred-time-${index}`} className="text-sm text-text-secondary">
+                Preferred time
+              </label>
               <input
+                id={`preferred-time-${index}`}
                 type="time"
                 value={row.preferredTime}
                 onChange={(e) => updateRow(index, { preferredTime: e.target.value })}
@@ -225,18 +235,24 @@ export function HabitsStep({
               value={row.contextTrigger}
               onChange={(e) => updateRow(index, { contextTrigger: e.target.value })}
               placeholder="Cue (e.g. after brushing teeth)"
+              aria-label="Cue"
               className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary outline-none focus:border-accent"
             />
 
             <div className="flex flex-col gap-1.5">
               <label className="text-sm text-text-secondary">Difficulty: {row.difficulty}/5</label>
-              <Slider value={row.difficulty} onValueChange={(value) => updateRow(index, { difficulty: value })} />
+              <Slider
+                value={row.difficulty}
+                onValueChange={(value) => updateRow(index, { difficulty: value })}
+                ariaLabel={`Difficulty for habit ${index + 1}`}
+              />
             </div>
 
             <textarea
               value={row.reason}
               onChange={(e) => updateRow(index, { reason: e.target.value })}
               placeholder="Why does this habit matter to you? (optional)"
+              aria-label="Reason"
               rows={2}
               className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary outline-none focus:border-accent"
             />

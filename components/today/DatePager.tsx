@@ -23,14 +23,14 @@ export function DatePager({ date, today }: { date: LocalDate; today: LocalDate }
 
   return (
     <div className="flex items-center gap-3">
-      <PagerLink date={previous} disabled={!canGoBack}>
-        <ChevronLeft size={16} />
+      <PagerLink date={previous} disabled={!canGoBack} label="Previous day">
+        <ChevronLeft size={16} aria-hidden="true" />
       </PagerLink>
       <span className="min-w-[9rem] text-center text-sm font-medium text-text-primary">
         {formatLabel(date, today)}
       </span>
-      <PagerLink date={next} disabled={!canGoForward}>
-        <ChevronRight size={16} />
+      <PagerLink date={next} disabled={!canGoForward} label="Next day">
+        <ChevronRight size={16} aria-hidden="true" />
       </PagerLink>
     </div>
   );
@@ -39,10 +39,12 @@ export function DatePager({ date, today }: { date: LocalDate; today: LocalDate }
 function PagerLink({
   date,
   disabled,
+  label,
   children,
 }: {
   date: LocalDate;
   disabled: boolean;
+  label: string;
   children: React.ReactNode;
 }) {
   const className = cn(
@@ -50,10 +52,14 @@ function PagerLink({
     disabled ? "pointer-events-none opacity-40" : "hover:text-text-primary",
   );
   if (disabled) {
-    return <span className={className}>{children}</span>;
+    return (
+      <span className={className} aria-hidden="true">
+        {children}
+      </span>
+    );
   }
   return (
-    <Link href={`/today?date=${date}`} className={className}>
+    <Link href={`/today?date=${date}`} aria-label={label} className={className}>
       {children}
     </Link>
   );

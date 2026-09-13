@@ -47,7 +47,11 @@ export function CheckInMetaForm({
           <label className="text-sm text-text-secondary">
             {label}: {values[key]}/5
           </label>
-          <Slider value={values[key]} onValueChange={(next) => setValues((v) => ({ ...v, [key]: next }))} />
+          <Slider
+            value={values[key]}
+            onValueChange={(next) => setValues((v) => ({ ...v, [key]: next }))}
+            ariaLabel={label}
+          />
         </div>
       ))}
 

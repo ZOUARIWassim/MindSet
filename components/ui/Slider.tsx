@@ -8,12 +8,14 @@ export function Slider({
   min = 1,
   max = 5,
   step = 1,
+  ariaLabel,
 }: {
   value: number;
   onValueChange: (value: number) => void;
   min?: number;
   max?: number;
   step?: number;
+  ariaLabel: string;
 }) {
   return (
     <RadixSlider.Root
@@ -27,7 +29,10 @@ export function Slider({
       <RadixSlider.Track className="relative h-1.5 grow rounded-full bg-surface-tertiary">
         <RadixSlider.Range className="absolute h-full rounded-full bg-accent" />
       </RadixSlider.Track>
-      <RadixSlider.Thumb className="block h-4 w-4 rounded-full bg-accent shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-light" />
+      <RadixSlider.Thumb
+        aria-label={ariaLabel}
+        className="block h-4 w-4 rounded-full bg-accent shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-light"
+      />
     </RadixSlider.Root>
   );
 }
