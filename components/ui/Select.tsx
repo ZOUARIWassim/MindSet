@@ -1,0 +1,56 @@
+"use client";
+
+import * as RadixSelect from "@radix-ui/react-select";
+import { Check, ChevronDown } from "lucide-react";
+import { cn } from "@/lib/cn";
+
+export interface SelectOption {
+  value: string;
+  label: string;
+}
+
+export function Select({
+  value,
+  onValueChange,
+  options,
+  className,
+}: {
+  value: string;
+  onValueChange: (value: string) => void;
+  options: SelectOption[];
+  className?: string;
+}) {
+  return (
+    <RadixSelect.Root value={value} onValueChange={onValueChange}>
+      <RadixSelect.Trigger
+        className={cn(
+          "flex items-center justify-between gap-2 rounded-lg border border-border bg-surface-secondary px-3 py-2 text-sm text-text-primary outline-none focus:border-accent",
+          className,
+        )}
+      >
+        <RadixSelect.Value />
+        <RadixSelect.Icon>
+          <ChevronDown size={14} className="text-text-muted" />
+        </RadixSelect.Icon>
+      </RadixSelect.Trigger>
+      <RadixSelect.Portal>
+        <RadixSelect.Content className="overflow-hidden rounded-lg border border-border bg-surface-secondary shadow-lg">
+          <RadixSelect.Viewport className="p-1">
+            {options.map((option) => (
+              <RadixSelect.Item
+                key={option.value}
+                value={option.value}
+                className="flex cursor-pointer items-center justify-between gap-2 rounded-md px-3 py-2 text-sm text-text-primary outline-none data-[highlighted]:bg-surface-tertiary"
+              >
+                <RadixSelect.ItemText>{option.label}</RadixSelect.ItemText>
+                <RadixSelect.ItemIndicator>
+                  <Check size={14} className="text-accent" />
+                </RadixSelect.ItemIndicator>
+              </RadixSelect.Item>
+            ))}
+          </RadixSelect.Viewport>
+        </RadixSelect.Content>
+      </RadixSelect.Portal>
+    </RadixSelect.Root>
+  );
+}
