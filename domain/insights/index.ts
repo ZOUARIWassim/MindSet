@@ -24,9 +24,19 @@ const ALL_KINDS: InsightKind[] = [
 ];
 
 /**
+ * The identity of an insight for dedupe purposes: which specific habit,
+ * system, or (falling back) account-wide pattern it's about. Two insights
+ * of the same kind about *different* habits are not duplicates.
+ */
+function scopeKeyOf(kind: string, evidence: Record<string, unknown>): string {
+  const scope = evidence.habitId ?? evidence.systemId ?? evidence.identityId ?? "account";
+  return `${kind}:${scope}`;
+}
+
+/**
  * Runs every insight generator and drops drafts that would duplicate a
  * still-relevant (not dismissed, within the cooldown window) existing
- * insight of the same kind.
+ * insight of the same kind and scope (same habit/system, not just same kind).
  */
 export function generateInsights(context: UserContext): InsightDraft[] {
   const drafts = [
@@ -37,7 +47,7 @@ export function generateInsights(context: UserContext): InsightDraft[] {
     ...generateMinimumRelianceInsights(context),
   ];
 
-  const recentActiveKinds = new Set(
+  const recentActiveScopes = new Set(
     context.existingInsights
       .filter((insight) => insight.dismissedAt === null)
       .filter(
@@ -47,10 +57,10 @@ export function generateInsights(context: UserContext): InsightDraft[] {
             context.referenceDate,
           ) < INSIGHT_COOLDOWN_DAYS,
       )
-      .map((insight) => insight.kind),
+      .map((insight) => scopeKeyOf(insight.kind, insight.evidence)),
   );
 
-  return drafts.filter((draft) => !recentActiveKinds.has(draft.kind));
+  return drafts.filter((draft) => !recentActiveScopes.has(scopeKeyOf(draft.kind, draft.evidence)));
 }
 
 /** How many more days of check-ins are needed before each insight kind can fire. */

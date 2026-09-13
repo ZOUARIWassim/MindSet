@@ -30,6 +30,9 @@ export function AppShell({
               {identity.name}
             </Link>
           ))}
+          <Link href="/insights" className="text-sm text-text-secondary hover:text-text-primary">
+            Insights
+          </Link>
         </nav>
         <div className="flex items-center gap-4">
           {userName && <span className="text-sm text-text-muted">{userName}</span>}

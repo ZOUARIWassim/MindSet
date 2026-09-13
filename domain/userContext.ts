@@ -40,6 +40,7 @@ export type InsightKind =
 
 export interface ExistingInsight {
   kind: InsightKind;
+  evidence: Record<string, unknown>;
   createdAt: Date;
   dismissedAt: Date | null;
 }

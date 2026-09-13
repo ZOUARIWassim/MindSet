@@ -97,6 +97,29 @@ describe("generateTimeOfDayInsights", () => {
     expect(drafts[0].evidence.bestBucket).toBe("morning");
     expect(drafts[0].evidence.worstBucket).toBe("night");
   });
+
+  it("flags a system where morning habits succeed more than night habits, even when neither habit varies internally", () => {
+    const dates = Array.from({ length: 20 }, (_, i) => addDaysLocal("2026-03-01", i));
+    const morningEntries = dates.map((date) => entry(date, "completed", new Date(`${date}T08:00:00Z`)));
+    const nightEntries = dates.map((date, i) =>
+      i % 4 === 0 ? entry(date, "completed", new Date(`${date}T22:00:00Z`)) : entry(date, "missed"),
+    );
+    const morningHabit = makeHabit({ id: "morning-run", name: "Morning Run", preferredTime: "08:00", entries: morningEntries });
+    const nightHabit = makeHabit({ id: "strength", name: "Strength Session", preferredTime: "22:00", entries: nightEntries });
+    const checkIns = dates.map((date) => ({ date, energy: 3, mood: 3, stress: 3, focus: 3, context: null }));
+
+    const drafts = generateTimeOfDayInsights(
+      makeContext({
+        identities: [{ id: "id1", name: "Athlete", systems: [makeSystem("s1", [morningHabit, nightHabit])] }],
+        checkIns,
+      }),
+    );
+
+    const crossHabitDraft = drafts.find((d) => d.evidence.systemId === "s1");
+    expect(crossHabitDraft).toBeDefined();
+    expect(crossHabitDraft?.evidence.bestBucket).toBe("morning");
+    expect(crossHabitDraft?.evidence.worstBucket).toBe("night");
+  });
 });
 
 describe("generateDecliningSystemInsights", () => {
@@ -189,7 +212,12 @@ describe("generateInsights", () => {
       identities: [{ id: "id1", name: "Reader", systems: [makeSystem("s1", [habit])] }],
       referenceDate: "2026-03-15",
       existingInsights: [
-        { kind: "minimum_reliance", createdAt: new Date("2026-03-14T00:00:00Z"), dismissedAt: null },
+        {
+          kind: "minimum_reliance",
+          evidence: { habitId: "h1" },
+          createdAt: new Date("2026-03-14T00:00:00Z"),
+          dismissedAt: null,
+        },
       ],
     });
 
@@ -209,6 +237,7 @@ describe("generateInsights", () => {
       existingInsights: [
         {
           kind: "minimum_reliance",
+          evidence: { habitId: "h1" },
           createdAt: new Date("2026-03-14T00:00:00Z"),
           dismissedAt: new Date("2026-03-14T01:00:00Z"),
         },
@@ -216,6 +245,30 @@ describe("generateInsights", () => {
     });
 
     expect(generateInsights(context).filter((d) => d.kind === "minimum_reliance")).toHaveLength(1);
+  });
+
+  it("does not let a recent insight about one habit suppress the same kind about a different habit", () => {
+    const entries: HabitEntryLike[] = [
+      ...Array.from({ length: 6 }, (_, i) => entry(`2026-03-0${i + 1}`, "minimum")),
+      ...Array.from({ length: 4 }, (_, i) => entry(`2026-03-1${i}`, "completed")),
+    ];
+    const habitA = makeHabit({ id: "h1", entries });
+    const habitB = makeHabit({ id: "h2", entries });
+    const context = makeContext({
+      identities: [{ id: "id1", name: "Reader", systems: [makeSystem("s1", [habitA, habitB])] }],
+      referenceDate: "2026-03-15",
+      existingInsights: [
+        {
+          kind: "minimum_reliance",
+          evidence: { habitId: "h1" },
+          createdAt: new Date("2026-03-14T00:00:00Z"),
+          dismissedAt: null,
+        },
+      ],
+    });
+
+    const results = generateInsights(context).filter((d) => d.kind === "minimum_reliance");
+    expect(results.map((d) => d.evidence.habitId)).toEqual(["h2"]);
   });
 });
 
