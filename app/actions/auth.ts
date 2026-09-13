@@ -37,3 +37,23 @@ export async function signup(_prevState: SignupState, formData: FormData): Promi
 
   return { error: null };
 }
+
+export interface LoginState {
+  error: string | null;
+}
+
+export async function login(_prevState: LoginState, formData: FormData): Promise<LoginState> {
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  const password = String(formData.get("password") ?? "");
+
+  try {
+    await signIn("credentials", { email, password, redirectTo: "/" });
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return { error: "That email and password don't match an account yet." };
+    }
+    throw error;
+  }
+
+  return { error: null };
+}
