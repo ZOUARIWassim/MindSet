@@ -378,3 +378,20 @@ export function systemHealth(
 
   return { systemId: system.id, rate, perHabit, trend, sampleSize };
 }
+
+export interface DailyOutcome {
+  date: LocalDate;
+  status: HabitEntryStatus | null;
+}
+
+/**
+ * The per-day status of a habit across a window, for a heatmap-style view.
+ * `status: null` means the day was due but nothing was logged - deliberately
+ * not a "streak broken" signal, just an unlogged day. Works for `n_per_week`
+ * habits too, since every calendar day is a due day for them.
+ */
+export function dailyOutcomes(habit: DueHabitInput, entries: HabitEntryLike[], window: Window, timezone: string): DailyOutcome[] {
+  const dueDates = dueDatesInWindow(habit, window, timezone);
+  const entryByDate = new Map(entries.map((e) => [e.checkInDate, e]));
+  return dueDates.map((date) => ({ date, status: entryByDate.get(date)?.status ?? null }));
+}

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   completionRate,
+  dailyOutcomes,
   rateByTimeOfDay,
   rateByWeekday,
   systemHealth,
@@ -186,5 +187,23 @@ describe("systemHealth", () => {
     );
     expect(result.trend).toBe("declining");
     expect(result.rate).toBe(0);
+  });
+});
+
+describe("dailyOutcomes", () => {
+  it("marks an unlogged due day as null status rather than a failure signal", () => {
+    const h = habit({ id: "h" });
+    const entries = [entry("2026-03-01", "completed")];
+    const outcomes = dailyOutcomes(h, entries, { start: "2026-03-01", end: "2026-03-02" }, "UTC");
+    expect(outcomes).toEqual([
+      { date: "2026-03-01", status: "completed" },
+      { date: "2026-03-02", status: null },
+    ]);
+  });
+
+  it("treats every day as due for an n_per_week habit", () => {
+    const h = habit({ id: "h", frequency: { type: "n_per_week", n: 3 } });
+    const outcomes = dailyOutcomes(h, [], { start: "2026-03-01", end: "2026-03-03" }, "UTC");
+    expect(outcomes).toHaveLength(3);
   });
 });

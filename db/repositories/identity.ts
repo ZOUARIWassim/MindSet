@@ -13,6 +13,25 @@ export function findIdentityForUser(identityId: string, userId: string) {
   return prisma.identity.findFirst({ where: { id: identityId, userId, archivedAt: null } });
 }
 
+export function findIdentityWithDetailsForUser(identityId: string, userId: string, entriesSince: Date) {
+  return prisma.identity.findFirst({
+    where: { id: identityId, userId, archivedAt: null },
+    include: {
+      goals: { orderBy: { createdAt: "asc" } },
+      systems: {
+        orderBy: { order: "asc" },
+        include: {
+          habits: {
+            where: { status: { not: "abandoned" } },
+            orderBy: { createdAt: "asc" },
+            include: { entries: { where: { checkIn: { date: { gte: entriesSince } } }, include: { checkIn: true } } },
+          },
+        },
+      },
+    },
+  });
+}
+
 export interface CreateIdentityInput {
   userId: string;
   name: string;

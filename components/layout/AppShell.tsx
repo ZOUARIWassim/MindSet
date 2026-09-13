@@ -4,9 +4,11 @@ import { SignOutButton } from "./SignOutButton";
 
 export function AppShell({
   userName,
+  identities,
   children,
 }: {
   userName: string | null;
+  identities: Array<{ id: string; name: string }>;
   children: React.ReactNode;
 }) {
   return (
@@ -19,6 +21,15 @@ export function AppShell({
           <Link href="/today" className="text-sm text-text-secondary hover:text-text-primary">
             Today
           </Link>
+          {identities.map((identity) => (
+            <Link
+              key={identity.id}
+              href={`/identities/${identity.id}`}
+              className="text-sm text-text-secondary hover:text-text-primary"
+            >
+              {identity.name}
+            </Link>
+          ))}
         </nav>
         <div className="flex items-center gap-4">
           {userName && <span className="text-sm text-text-muted">{userName}</span>}
