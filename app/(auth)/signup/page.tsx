@@ -5,7 +5,7 @@ export default function SignupPage() {
   return (
     <div className="flex w-full max-w-sm flex-col items-center gap-8">
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-semibold text-text-primary">Start your system</h1>
+        <h1 className="font-display text-3xl font-semibold text-text-primary">Start your system</h1>
         <p className="text-sm text-text-secondary">
           A few minutes to set up who you want to become.
         </p>

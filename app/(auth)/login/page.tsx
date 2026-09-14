@@ -5,7 +5,7 @@ export default function LoginPage() {
   return (
     <div className="flex w-full max-w-sm flex-col items-center gap-8">
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-semibold text-text-primary">
+        <h1 className="font-display text-3xl font-semibold text-text-primary">
           Welcome back
         </h1>
         <p className="text-sm text-text-secondary">
