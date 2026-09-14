@@ -1,341 +1,67 @@
-# MindSet - Life Discipline Tracker
+# MindSet
 
-A comprehensive web application designed to help you maintain discipline across all areas of life, including:
-- 🏋️ Physical fitness and workout tracking
-- 🥗 Nutrition and meal logging
-- 🕌 Spiritual practices (prayers, Quran reading)
-- 💼 Work and study habits
-- 📊 Progress analytics and insights
-- 🎯 Custom habit tracking
+MindSet helps you become who you want to be by building sustainable systems, not by chasing motivation.
 
-Built with modern technologies and designed with AI integration in mind for future intelligent recommendations.
+**Don't optimize your motivation. Optimize your system.**
 
-## Project Structure
+You define an identity ("I am a healthy person"), attach goals to it, design habit systems made of concrete habits, do a fast daily check-in, and get insights about which parts of your system actually work.
 
-```
-mindset/
-├── backend/          # Node.js + Express + MongoDB API
-│   ├── src/
-│   │   ├── models/
-│   │   ├── routes/
-│   │   ├── controllers/
-│   │   ├── middleware/
-│   │   └── server.ts
-│   └── package.json
-├── frontend/         # React + TypeScript + Tailwind CSS
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── contexts/
-│   │   ├── services/
-│   │   └── App.tsx
-│   └── package.json
-└── README.md
-```
+No streaks, no points, no guilt. Every habit has a minimum version that still counts as a real success, and a missed day is treated as information about the system, not a personal failure.
 
-## Tech Stack
+## Features
 
-### Backend
-- **Node.js** with **Express** - RESTful API server
-- **TypeScript** - Type safety and better developer experience
-- **MongoDB** with **Mongoose** - Flexible NoSQL database
-- **JWT** - Secure authentication
-- **Bcrypt** - Password hashing
+- **Onboarding** — pick or write 1-3 identities, an optional goal each, a first habit system, and 1-3 habits (with a required minimum version), in under 3 minutes. Resumable: refreshing mid-flow picks up wherever you left off.
+- **Today** — the daily check-in. One tap for completed, a secondary control for minimum/partial/missed/skipped, energy/mood/stress/focus sliders, and a note. Editable for the last 7 days.
+- **Identity view** — statement, goals with progress, and each system's habits with a 30-day completion rate framed as "N of your last M days," never a bare percentage.
+- **Habit detail** — a 12-week heatmap (not a streak counter), completion rate by weekday and time of day, a value trend when the habit tracks a unit, and edit/pause/abandon.
+- **Insights** — five generators (context correlation, time-of-day comparison, declining system, metric correlation, minimum-version reliance) running nightly via Vercel Cron and on demand, with "X more days until insights" while data is still thin.
 
-### Frontend
-- **React 18** - Modern UI library
-- **TypeScript** - Type-safe frontend code
-- **Vite** - Fast build tool and dev server
-- **React Router** - Client-side routing
-- **Axios** - HTTP client
-- **Tailwind CSS** - Utility-first styling
-- **Recharts** - Data visualization (for analytics)
+## Stack
 
-## Prerequisites
+- [Next.js](https://nextjs.org) 16 (App Router) + TypeScript, server actions for mutations
+- PostgreSQL + [Prisma](https://www.prisma.io) 7 (driver-adapter client via `@prisma/adapter-pg`)
+- Tailwind CSS v4 + [Radix](https://www.radix-ui.com) primitives
+- [Auth.js](https://authjs.dev) v5 (email + password via Credentials)
+- [Vitest](https://vitest.dev) for domain unit tests, [Playwright](https://playwright.dev) for e2e
 
-Before you begin, ensure you have the following installed:
-
-1. **Node.js** (v18 or higher)
-2. **npm** (comes with Node.js)
-3. **MongoDB** (local installation or MongoDB Atlas account)
-4. **Git** (for version control)
-
-### Installing Node.js
-
-If Node.js is not installed, choose one of these methods:
-
-#### Option 1: Using NodeSource (Recommended for Ubuntu/Debian)
-```bash
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt-get install -y nodejs
-```
-
-#### Option 2: Using NVM (Node Version Manager)
-```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-source ~/.bashrc
-nvm install 20
-nvm use 20
-```
-
-#### Option 3: Using system package manager
-```bash
-sudo apt update
-sudo apt install nodejs npm
-```
-
-Verify installation:
-```bash
-node --version  # Should show v18.x or higher
-npm --version   # Should show 9.x or higher
-```
-
-### Installing MongoDB
-
-#### Option 1: Local MongoDB (Ubuntu)
-```bash
-sudo apt-get install -y mongodb
-sudo systemctl start mongodb
-sudo systemctl enable mongodb
-```
-
-#### Option 2: MongoDB Atlas (Cloud - Recommended)
-1. Go to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-2. Create a free account
-3. Create a new cluster
-4. Get your connection string
-5. Use it in your `.env` file
-
-## Installation & Setup
-
-### 1. Clone or navigate to the project
-```bash
-cd /home/wassim/Desktop/Wassim_Zephyrus/mindset
-```
-
-### 2. Backend Setup
+## Getting started
 
 ```bash
-# Navigate to backend directory
-cd backend
-
-# Install dependencies
-npm install
-
-# Create environment file
-cp .env.example .env
-
-# Edit .env and configure:
-# - MONGODB_URI (your MongoDB connection string)
-# - JWT_SECRET (generate a secure random string)
-# - PORT (default: 5000)
-nano .env
-```
-
-Example `.env` configuration:
-```env
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/mindset
-JWT_SECRET=your_super_secure_random_string_here_change_this
-NODE_ENV=development
-```
-
-To generate a secure JWT secret:
-```bash
-node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
-```
-
-### 3. Frontend Setup
-
-```bash
-# Navigate to frontend directory (from project root)
-cd ../frontend
-
-# Install dependencies
-npm install
-
-# Create environment file
-cp .env.example .env
-
-# The default configuration should work if backend is on port 5000
-```
-
-## Running the Application
-
-You'll need **two terminal windows** - one for backend, one for frontend.
-
-### Terminal 1: Start Backend Server
-
-```bash
-cd backend
+docker compose up -d          # local Postgres on :5432
+cp .env.example .env          # fill in AUTH_SECRET (openssl rand -hex 32)
+npm install                   # also runs `prisma generate`
+npm run db:migrate            # apply the schema
+npm run db:seed               # demo user: demo@mindset.local / mindset-demo, 90 days of data
 npm run dev
 ```
 
-You should see:
-```
-✅ MongoDB connected successfully
-🚀 Server running on port 5000
-📍 Health check: http://localhost:5000/health
-📍 API base URL: http://localhost:5000/api
-```
+Open [http://localhost:3000](http://localhost:3000) and either sign in as the demo user or sign up fresh.
 
-### Terminal 2: Start Frontend Development Server
+## Project layout
+
+- `app/` — routes, layouts, and server actions (`app/actions/*`)
+- `domain/` — pure, fully unit-tested business logic: scheduling, completion, correlation, insight generators. No I/O, no Prisma imports.
+- `db/` — the Prisma client, repositories, and `userContext.ts` (the read-only assembler the insights engine reads from)
+- `components/` — presentational React components, grouped by feature
+- `lib/` — Auth.js config, timezone helpers, onboarding presets, copy helpers
+- `prisma/` — schema, migrations, seed script
+
+Note: this project runs on Next.js 16 and Prisma 7, both of which changed significantly from earlier versions (Next renamed `middleware` to `proxy` and changed some App Router conventions; Prisma moved config out of `schema.prisma` into `prisma7.config.ts` and now requires an explicit driver adapter). See `AGENTS.md` if you're using an AI coding assistant on this repo — it points at the bundled `node_modules/next/dist/docs/` for the current API surface.
+
+## Testing
 
 ```bash
-cd frontend
-npm run dev
+npm run test        # Vitest — domain unit tests
+npm run test:e2e    # Playwright — full flows (signup/onboarding, check-in, identity/habit browsing, insights)
 ```
 
-You should see:
-```
-VITE v5.x.x ready in xxx ms
+The e2e suite runs serially (not in parallel) because several specs share the seeded demo account and mutate its data.
 
-➜  Local:   http://localhost:3000/
-➜  Network: use --host to expose
-```
+## Deploying
 
-### 3. Open the Application
+Target: Vercel + a hosted Postgres (Vercel Postgres, Neon, Supabase, etc.).
 
-Open your browser and navigate to:
-```
-http://localhost:3000
-```
-
-You should see the MindSet login page!
-
-## First Steps
-
-1. **Create an account**: Click "Sign up" and register with your email
-2. **Login**: Use your credentials to log in
-3. **Explore the dashboard**: View the initial habit tracking interface
-4. **Check spiritual habits**: Mark your daily prayers and Quran reading
-5. **Track daily habits**: Monitor work/study, exercise, diet, and sleep
-
-## Current Features (MVP)
-
-✅ User authentication (signup/login)
-✅ Secure JWT-based sessions
-✅ Protected routes
-✅ Dashboard with today's overview
-✅ Spiritual habits checklist (5 prayers, Quran)
-✅ Daily habits tracker
-✅ Responsive design
-✅ Clean, modern UI
-
-## Coming Soon
-
-🚧 Full custom habit tracking system
-🚧 Detailed workout logging
-🚧 Nutrition tracking with macro counting
-🚧 Progress analytics with charts
-🚧 Streak tracking and achievements
-🚧 AI-powered insights and recommendations
-🚧 Mobile app (React Native)
-🚧 Push notifications
-🚧 Social features and challenges
-
-## Development Workflow
-
-### Backend Development
-```bash
-cd backend
-npm run dev        # Start with auto-reload
-npm run build      # Compile TypeScript
-npm start          # Run production build
-```
-
-### Frontend Development
-```bash
-cd frontend
-npm run dev        # Start dev server
-npm run build      # Build for production
-npm run preview    # Preview production build
-```
-
-## API Testing
-
-Test the backend API using curl:
-
-### Health Check
-```bash
-curl http://localhost:5000/health
-```
-
-### Sign Up
-```bash
-curl -X POST http://localhost:5000/api/auth/signup \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Test User","email":"test@example.com","password":"test123"}'
-```
-
-### Login
-```bash
-curl -X POST http://localhost:5000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"test123"}'
-```
-
-## Troubleshooting
-
-### Backend won't start
-- Check MongoDB is running: `sudo systemctl status mongodb`
-- Verify `.env` file exists and has correct values
-- Check port 5000 is not in use: `lsof -i :5000`
-
-### Frontend can't connect to backend
-- Ensure backend is running on port 5000
-- Check `.env` file in frontend has correct API URL
-- Clear browser cache and localStorage
-
-### MongoDB connection issues
-- If using local MongoDB: `sudo systemctl start mongodb`
-- If using Atlas: verify connection string and IP whitelist
-
-### npm install errors
-- Clear npm cache: `npm cache clean --force`
-- Delete `node_modules` and `package-lock.json`, then reinstall
-
-## Project Roadmap
-
-### Phase 1: Foundation ✅ (Current)
-- Backend API with authentication
-- Frontend with React and TypeScript
-- Basic dashboard UI
-
-### Phase 2: Core Features (In Progress)
-- Flexible habit tracking system
-- Workout logging
-- Nutrition tracking
-
-### Phase 3: Analytics & Insights
-- Progress charts and graphs
-- Streak tracking
-- Statistical analysis
-
-### Phase 4: AI Integration
-- Workout recommendations
-- Nutrition suggestions
-- Pattern recognition
-- Smart reminders
-
-### Phase 5: Mobile & Scale
-- React Native mobile apps
-- PWA features
-- Social features
-- Community challenges
-
-## Contributing
-
-This is a personal project, but suggestions and feedback are welcome!
-
-## License
-
-MIT License - Feel free to use this as inspiration for your own projects
-
-## Author
-
-**Wassim** - Building MindSet to achieve discipline and excellence in all areas of life
-
----
-
-**Stay disciplined. Stay focused. Build your MindSet.** 💪
+1. Push to a Git remote and import the repo in Vercel.
+2. Set environment variables in the Vercel project: `DATABASE_URL`, `AUTH_SECRET`, and optionally `CRON_SECRET` (verifies that `/api/cron/insights` requests actually come from Vercel Cron).
+3. Run `npx prisma migrate deploy` against the production database (from CI or locally with the production `DATABASE_URL`).
+4. `vercel.json` already defines the nightly insights cron job.
