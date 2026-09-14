@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Fraunces } from "next/font/google";
+import { Toaster } from "sonner";
 import { SessionProviderWrapper } from "@/components/providers/SessionProviderWrapper";
 import { ThemeScript } from "@/components/theme/ThemeScript";
 import "./globals.css";
@@ -36,6 +37,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col font-sans">
         <SessionProviderWrapper>{children}</SessionProviderWrapper>
+        <Toaster position="top-center" toastOptions={{ className: "font-sans" }} />
       </body>
     </html>
   );

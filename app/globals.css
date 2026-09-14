@@ -236,3 +236,16 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Sonner toasts follow the same .dark-class theme system as everything else. */
+[data-sonner-toaster] {
+  --normal-bg: var(--surface-secondary);
+  --normal-text: var(--text-primary);
+  --normal-border: var(--border);
+  --success-bg: var(--color-success-surface);
+  --success-text: var(--color-success-dark);
+  --success-border: var(--color-success);
+  --error-bg: var(--color-danger-surface);
+  --error-text: var(--color-danger-dark);
+  --error-border: var(--color-danger);
+}
