@@ -31,7 +31,7 @@ export function Slider({
       </RadixSlider.Track>
       <RadixSlider.Thumb
         aria-label={ariaLabel}
-        className="block h-4 w-4 rounded-full bg-accent shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-light"
+        className="block h-5 w-5 rounded-full border-2 border-surface bg-accent shadow-soft transition-transform duration-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-light active:scale-110"
       />
     </RadixSlider.Root>
   );

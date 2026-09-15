@@ -17,8 +17,8 @@ export function GenerateInsightsButton() {
   }
 
   return (
-    <Button variant="secondary" onClick={handleClick} disabled={isPending}>
-      {isPending ? "Checking..." : "Check for new insights"}
+    <Button variant="secondary" onClick={handleClick} isLoading={isPending}>
+      Check for new insights
     </Button>
   );
 }

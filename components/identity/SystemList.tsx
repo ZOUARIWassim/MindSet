@@ -22,7 +22,10 @@ export function SystemList({ systems }: { systems: SystemWithProgress[] }) {
   return (
     <div className="flex flex-col gap-6">
       {systems.map((system) => (
-        <div key={system.id} className="flex flex-col gap-3 rounded-xl border border-border p-4">
+        <div
+          key={system.id}
+          className="flex flex-col gap-3 rounded-2xl border border-border bg-surface-secondary/30 p-4 shadow-soft"
+        >
           <div>
             <p className="font-medium text-text-primary">{system.name}</p>
             {system.description && <p className="text-sm text-text-secondary">{system.description}</p>}
@@ -32,13 +35,13 @@ export function SystemList({ systems }: { systems: SystemWithProgress[] }) {
               <li key={habit.id}>
                 <Link
                   href={`/habits/${habit.id}`}
-                  className="flex items-center justify-between gap-3 rounded-lg bg-surface-secondary px-3 py-2 hover:bg-surface-tertiary"
+                  className="flex items-center justify-between gap-3 rounded-lg bg-surface-secondary px-3 py-2 transition-colors hover:bg-surface-tertiary"
                 >
                   <div>
                     <p className="text-sm font-medium text-text-primary">
                       {habit.name}
                       {habit.status === "paused" && (
-                        <span className="ml-2 text-xs font-normal text-text-muted">Paused</span>
+                        <span className="ml-2 text-xs font-normal text-warning-dark">Paused</span>
                       )}
                     </p>
                     <p className="text-xs text-text-secondary">

@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { Sparkles } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { assembleUserContext } from "@/db/userContext";
 import { listActiveInsightsForUser } from "@/db/repositories/insight";
@@ -17,8 +18,8 @@ export default async function InsightsPage() {
   const pending = daysUntilInsightsAvailable(context).filter((entry) => entry.daysRemaining > 0);
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-6">
-      <div className="flex items-center justify-between">
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-semibold text-text-primary">Insights</h1>
           <p className="text-sm text-text-secondary">What your system is telling you.</p>
@@ -28,6 +29,7 @@ export default async function InsightsPage() {
 
       {insights.length === 0 ? (
         <EmptyState
+          icon={Sparkles}
           title="No insights yet"
           description="Once there's enough data, patterns worth knowing about will show up here."
         />

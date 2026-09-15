@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { CalendarCheck } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/db/client";
 import { getCheckInForDate, weekEntryCountsForUser } from "@/db/repositories/checkin";
@@ -33,6 +34,7 @@ export default async function TodayPage({
 
   const habits = await prisma.habit.findMany({
     where: { system: { identity: { userId: user.id } }, status: "active" },
+    orderBy: { createdAt: "asc" },
   });
 
   const weekStart = startOfWeekLocal(date);
@@ -60,8 +62,8 @@ export default async function TodayPage({
   const entryByHabitId = new Map(checkIn?.entries.map((entry) => [entry.habitId, entry]) ?? []);
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-6">
-      <div className="flex items-center justify-between">
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-semibold text-text-primary">Today</h1>
           <p className="text-sm text-text-secondary">
@@ -75,6 +77,7 @@ export default async function TodayPage({
 
       {due.length === 0 ? (
         <EmptyState
+          icon={CalendarCheck}
           title="Nothing due"
           description="Your habits will show up here as soon as they're scheduled for this day."
         />

@@ -3,11 +3,11 @@ import type { DailyOutcome } from "@/domain/completion";
 import { localDateWeekday } from "@/domain/timezone";
 
 const STATUS_CLASSES: Record<string, string> = {
-  completed: "bg-accent",
-  minimum: "bg-accent/50",
-  partial: "bg-amber-400/70 dark:bg-amber-500/60",
-  missed: "bg-surface-tertiary",
-  skipped_intentionally: "bg-text-muted/30",
+  completed: "bg-success",
+  minimum: "bg-success/50",
+  partial: "bg-warning",
+  missed: "bg-missed-surface",
+  skipped_intentionally: "bg-skipped/40",
   due: "border border-dashed border-border",
 };
 
@@ -18,7 +18,8 @@ function classFor(status: DailyOutcome["status"]): string {
 /**
  * A 12-week GitHub-style grid, deliberately not a streak counter: cells are
  * colored by what happened that day, with no distinction drawn between
- * "day 1 of a run" and "day 40 of a run."
+ * "day 1 of a run" and "day 40 of a run." Uses the same semantic status
+ * colors as the Today screen's chips, for a consistent visual language.
  */
 export function HabitHeatmap({ outcomes }: { outcomes: DailyOutcome[] }) {
   // Pad the front so day rows line up with their real weekday (0=Sun..6=Sat),
@@ -52,12 +53,12 @@ export function HabitHeatmap({ outcomes }: { outcomes: DailyOutcome[] }) {
           </div>
         ))}
       </div>
-      <div className="flex items-center gap-3 text-xs text-text-muted">
-        <Legend swatch="bg-accent" label="Completed" />
-        <Legend swatch="bg-accent/50" label="Minimum" />
-        <Legend swatch="bg-amber-400/70 dark:bg-amber-500/60" label="Partial" />
-        <Legend swatch="bg-surface-tertiary" label="Missed" />
-        <Legend swatch="bg-text-muted/30" label="Skipped" />
+      <div className="flex flex-wrap items-center gap-3 text-xs text-text-muted">
+        <Legend swatch="bg-success" label="Completed" />
+        <Legend swatch="bg-success/50" label="Minimum" />
+        <Legend swatch="bg-warning" label="Partial" />
+        <Legend swatch="bg-missed-surface" label="Missed" />
+        <Legend swatch="bg-skipped/40" label="Skipped" />
       </div>
     </div>
   );

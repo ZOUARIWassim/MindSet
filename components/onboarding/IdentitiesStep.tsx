@@ -2,9 +2,11 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/cn";
 import { submitIdentitiesStep, type IdentitySubmission } from "@/app/actions/onboarding";
 import type { IdentityPreset } from "@/lib/presets";
 
@@ -18,7 +20,6 @@ const MAX_IDENTITIES = 3;
 export function IdentitiesStep({ presets }: { presets: IdentityPreset[] }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState<string | null>(null);
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [goalIncluded, setGoalIncluded] = useState<Record<string, boolean>>({});
   const [customIdentities, setCustomIdentities] = useState<CustomIdentity[]>([]);
@@ -51,7 +52,6 @@ export function IdentitiesStep({ presets }: { presets: IdentityPreset[] }) {
   }
 
   function handleContinue() {
-    setError(null);
     const fromPresets: IdentitySubmission[] = selectedKeys.map((key) => {
       const preset = presets.find((p) => p.key === key)!;
       return {
@@ -67,7 +67,7 @@ export function IdentitiesStep({ presets }: { presets: IdentityPreset[] }) {
 
     const submissions = [...fromPresets, ...fromCustom];
     if (submissions.length === 0) {
-      setError("Choose or write at least one identity.");
+      toast.error("Choose or write at least one identity.");
       return;
     }
 
@@ -76,7 +76,7 @@ export function IdentitiesStep({ presets }: { presets: IdentityPreset[] }) {
         await submitIdentitiesStep(submissions);
         router.refresh();
       } catch {
-        setError("Something went wrong saving that. Try again.");
+        toast.error("Something went wrong saving that. Try again.");
       }
     });
   }
@@ -94,7 +94,10 @@ export function IdentitiesStep({ presets }: { presets: IdentityPreset[] }) {
         {presets.map((preset) => {
           const isSelected = selectedKeys.includes(preset.key);
           return (
-            <Card key={preset.key} className={isSelected ? "border-accent" : undefined}>
+            <Card
+              key={preset.key}
+              className={cn("transition-colors", isSelected && "border-accent bg-accent/5")}
+            >
               <div className="flex items-start gap-3">
                 <Checkbox
                   id={`preset-${preset.key}`}
@@ -133,7 +136,7 @@ export function IdentitiesStep({ presets }: { presets: IdentityPreset[] }) {
                 <button
                   type="button"
                   onClick={() => removeCustomIdentity(index)}
-                  className="text-xs text-text-muted hover:text-red-500"
+                  className="text-xs text-text-muted hover:text-danger"
                 >
                   Remove
                 </button>
@@ -160,17 +163,15 @@ export function IdentitiesStep({ presets }: { presets: IdentityPreset[] }) {
           <button
             type="button"
             onClick={addCustomIdentity}
-            className="rounded-xl border border-dashed border-border px-4 py-3 text-sm text-text-secondary hover:border-accent hover:text-accent"
+            className="rounded-2xl border border-dashed border-border px-4 py-3 text-sm text-text-secondary transition-colors hover:border-accent hover:text-accent"
           >
             + Write your own identity
           </button>
         )}
       </div>
 
-      {error && <p className="text-sm text-red-500">{error}</p>}
-
-      <Button onClick={handleContinue} disabled={isPending} className="self-start">
-        {isPending ? "Saving..." : "Continue"}
+      <Button onClick={handleContinue} isLoading={isPending} size="lg" className="self-start">
+        Continue
       </Button>
     </div>
   );

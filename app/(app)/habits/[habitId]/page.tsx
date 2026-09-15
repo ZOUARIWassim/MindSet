@@ -77,7 +77,7 @@ export default async function HabitDetailPage({
           </div>
         </div>
         {habit.status === "paused" && (
-          <p className="mt-2 text-sm font-medium text-amber-500">Paused</p>
+          <p className="mt-2 text-sm font-medium text-warning-dark">Paused</p>
         )}
         {habit.status === "abandoned" && (
           <p className="mt-2 text-sm font-medium text-text-muted">Abandoned</p>
@@ -97,7 +97,7 @@ export default async function HabitDetailPage({
       </div>
 
       {habit.reason && (
-        <p className="rounded-xl border border-border bg-surface-secondary p-4 text-sm italic text-text-secondary">
+        <p className="rounded-2xl border border-border bg-surface-secondary p-4 text-sm italic text-text-secondary">
           &ldquo;{habit.reason}&rdquo;
         </p>
       )}

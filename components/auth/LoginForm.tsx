@@ -36,7 +36,7 @@ export function LoginForm() {
           className="rounded-lg border border-border bg-surface-secondary px-3 py-2 text-sm text-text-primary outline-none focus:border-accent"
         />
       </div>
-      {state.error && <p className="text-sm text-red-500">{state.error}</p>}
+      {state.error && <p className="text-sm text-danger">{state.error}</p>}
       <button
         type="submit"
         disabled={isPending}
