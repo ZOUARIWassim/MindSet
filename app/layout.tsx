@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Fraunces } from "next/font/google";
-import { Toaster } from "sonner";
 import { SessionProviderWrapper } from "@/components/providers/SessionProviderWrapper";
 import { ThemeScript } from "@/components/theme/ThemeScript";
+import { ToasterProvider } from "@/components/providers/ToasterProvider";
 import "./globals.css";
 
 const inter = Inter({
@@ -37,7 +37,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col font-sans">
         <SessionProviderWrapper>{children}</SessionProviderWrapper>
-        <Toaster position="top-center" toastOptions={{ className: "font-sans" }} />
+        <ToasterProvider />
       </body>
     </html>
   );

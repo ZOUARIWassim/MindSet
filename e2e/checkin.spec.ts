@@ -28,7 +28,7 @@ test("saving the check-in sliders persists across a reload", async ({ page }) =>
 
   await page.getByLabel("Note (optional)").fill("Feeling steady today.");
   await page.getByRole("button", { name: "Save" }).click();
-  await expect(page.getByText("Saved.")).toBeVisible();
+  await expect(page.getByText("Check-in saved.")).toBeVisible();
 
   await page.reload();
   await expect(page.getByLabel("Note (optional)")).toHaveValue("Feeling steady today.");

@@ -1,17 +1,49 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { toast } from "sonner";
+import { CheckCircle, CheckCircle2, CircleDashed, CircleSlash, MinusCircle } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { saveHabitEntry } from "@/app/actions/checkin";
 import type { LocalDate } from "@/domain/timezone";
 import type { HabitEntryStatus } from "@/domain/completion";
 
-const STATUS_OPTIONS: Array<{ value: HabitEntryStatus; label: string }> = [
-  { value: "completed", label: "Complete" },
-  { value: "minimum", label: "Minimum" },
-  { value: "partial", label: "Partial" },
-  { value: "missed", label: "Missed" },
-  { value: "skipped_intentionally", label: "Skip" },
+const STATUS_OPTIONS: Array<{
+  value: HabitEntryStatus;
+  label: string;
+  icon: typeof CheckCircle2;
+  selectedClasses: string;
+}> = [
+  {
+    value: "completed",
+    label: "Complete",
+    icon: CheckCircle2,
+    selectedClasses: "border-transparent bg-success text-white",
+  },
+  {
+    value: "minimum",
+    label: "Minimum",
+    icon: CheckCircle,
+    selectedClasses: "border-success/40 bg-success-surface text-success-dark",
+  },
+  {
+    value: "partial",
+    label: "Partial",
+    icon: CircleDashed,
+    selectedClasses: "border-warning/40 bg-warning-surface text-warning-dark",
+  },
+  {
+    value: "missed",
+    label: "Missed",
+    icon: MinusCircle,
+    selectedClasses: "border-border bg-missed-surface text-text-secondary",
+  },
+  {
+    value: "skipped_intentionally",
+    label: "Skip",
+    icon: CircleSlash,
+    selectedClasses: "border-skipped/30 bg-skipped-surface text-skipped",
+  },
 ];
 
 export function DueHabitCard({
@@ -35,11 +67,9 @@ export function DueHabitCard({
 }) {
   const [status, setStatus] = useState<HabitEntryStatus | null>(initialStatus);
   const [value, setValue] = useState(initialValue?.toString() ?? "");
-  const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   function selectStatus(next: HabitEntryStatus) {
-    setError(null);
     const previous = status;
     setStatus(next);
     startTransition(async () => {
@@ -51,7 +81,7 @@ export function DueHabitCard({
         });
       } catch {
         setStatus(previous);
-        setError("Couldn't save that. Try again.");
+        toast.error(`Couldn't save "${habit.name}". Try again.`);
       }
     });
   }
@@ -67,60 +97,65 @@ export function DueHabitCard({
           value: value ? Number(value) : undefined,
         });
       } catch {
-        setError("Couldn't save that. Try again.");
+        toast.error(`Couldn't save "${habit.name}". Try again.`);
       }
     });
   }
 
   return (
-    <li className="flex flex-col gap-3 rounded-xl border border-border bg-surface-secondary p-4">
+    <li className="flex flex-col gap-3 rounded-2xl border border-border bg-surface-secondary p-4 shadow-soft">
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="font-medium text-text-primary">{habit.name}</p>
           <p className="text-sm text-text-secondary">{habit.behavior}</p>
         </div>
         {satisfiedThisWeek && (
-          <span className="whitespace-nowrap rounded-full bg-accent/10 px-2 py-1 text-xs font-medium text-accent">
+          <span className="whitespace-nowrap rounded-full bg-success-surface px-2 py-1 text-xs font-medium text-success-dark">
             Met this week
           </span>
         )}
       </div>
 
-      <div className="flex flex-wrap items-center gap-2">
-        {STATUS_OPTIONS.map((option) => (
-          <button
-            key={option.value}
-            type="button"
-            disabled={isPending}
-            aria-pressed={status === option.value}
-            onClick={() => selectStatus(option.value)}
-            className={cn(
-              "rounded-full border px-3 py-1 text-xs font-medium transition-colors disabled:opacity-60",
-              status === option.value
-                ? "border-accent bg-accent text-white"
-                : "border-border bg-surface text-text-secondary hover:text-text-primary",
-            )}
-          >
-            {option.label}
-          </button>
-        ))}
-        {habit.unit && (
-          <div className="flex items-center gap-1">
-            <input
-              type="number"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              onBlur={commitValue}
-              placeholder={habit.minimumValue?.toString() ?? "0"}
-              aria-label={`Value in ${habit.unit}`}
-              className="w-16 rounded-lg border border-border bg-surface px-2 py-1 text-xs text-text-primary outline-none focus:border-accent"
-            />
-            <span className="text-xs text-text-muted">{habit.unit}</span>
-          </div>
-        )}
+      <div className="grid grid-cols-5 gap-1.5">
+        {STATUS_OPTIONS.map((option) => {
+          const Icon = option.icon;
+          const isSelected = status === option.value;
+          return (
+            <button
+              key={option.value}
+              type="button"
+              disabled={isPending}
+              aria-pressed={isSelected}
+              aria-label={option.label}
+              onClick={() => selectStatus(option.value)}
+              className={cn(
+                "flex flex-col items-center justify-center gap-1 rounded-lg border py-2 text-xs font-medium transition-colors duration-150 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-60 sm:flex-row",
+                isSelected
+                  ? option.selectedClasses
+                  : "border-border bg-surface text-text-secondary hover:bg-surface-tertiary hover:text-text-primary",
+              )}
+            >
+              <Icon size={15} aria-hidden="true" />
+              <span className="hidden sm:inline">{option.label}</span>
+            </button>
+          );
+        })}
       </div>
 
-      {error && <p className="text-xs text-red-500">{error}</p>}
+      {habit.unit && (
+        <div className="flex items-center gap-1.5 self-start">
+          <input
+            type="number"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            onBlur={commitValue}
+            placeholder={habit.minimumValue?.toString() ?? "0"}
+            aria-label={`Value in ${habit.unit}`}
+            className="w-16 rounded-lg border border-border bg-surface px-2 py-1 text-xs text-text-primary outline-none focus:border-accent"
+          />
+          <span className="text-xs text-text-muted">{habit.unit}</span>
+        </div>
+      )}
     </li>
   );
 }

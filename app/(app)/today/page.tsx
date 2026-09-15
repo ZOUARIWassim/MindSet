@@ -60,8 +60,8 @@ export default async function TodayPage({
   const entryByHabitId = new Map(checkIn?.entries.map((entry) => [entry.habitId, entry]) ?? []);
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-6">
-      <div className="flex items-center justify-between">
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-semibold text-text-primary">Today</h1>
           <p className="text-sm text-text-secondary">

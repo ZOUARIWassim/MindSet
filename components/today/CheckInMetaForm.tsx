@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { toast } from "sonner";
 import { Slider } from "@/components/ui/Slider";
 import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 import { saveCheckInMeta } from "@/app/actions/checkin";
 import type { LocalDate } from "@/domain/timezone";
 
@@ -21,26 +23,22 @@ export function CheckInMetaForm({
   initial: { energy: number; mood: number; stress: number; focus: number; note: string };
 }) {
   const [values, setValues] = useState(initial);
-  const [saved, setSaved] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   function handleSave() {
-    setError(null);
-    setSaved(false);
     startTransition(async () => {
       try {
         await saveCheckInMeta(date, values);
-        setSaved(true);
+        toast.success("Check-in saved.");
       } catch {
-        setError("Couldn't save that. Try again.");
+        toast.error("Couldn't save that. Try again.");
       }
     });
   }
 
   return (
-    <div className="flex flex-col gap-4 rounded-xl border border-border bg-surface-secondary p-4">
-      <p className="font-medium text-text-primary">How are you doing today?</p>
+    <Card className="flex flex-col gap-4">
+      <p className="text-lg font-semibold text-text-primary">How are you doing today?</p>
 
       {METRICS.map(({ key, label }) => (
         <div key={key} className="flex flex-col gap-1.5">
@@ -68,14 +66,9 @@ export function CheckInMetaForm({
         />
       </div>
 
-      {error && <p className="text-sm text-red-500">{error}</p>}
-
-      <div className="flex items-center gap-3">
-        <Button onClick={handleSave} disabled={isPending} variant="secondary" className="self-start">
-          {isPending ? "Saving..." : "Save"}
-        </Button>
-        {saved && !isPending && <span className="text-sm text-text-muted">Saved.</span>}
-      </div>
-    </div>
+      <Button onClick={handleSave} isLoading={isPending} variant="secondary" className="self-start">
+        Save
+      </Button>
+    </Card>
   );
 }
