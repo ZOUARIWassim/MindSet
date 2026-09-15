@@ -33,6 +33,7 @@ export default async function TodayPage({
 
   const habits = await prisma.habit.findMany({
     where: { system: { identity: { userId: user.id } }, status: "active" },
+    orderBy: { createdAt: "asc" },
   });
 
   const weekStart = startOfWeekLocal(date);

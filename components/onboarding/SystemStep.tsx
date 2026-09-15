@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 import { submitSystemStep } from "@/app/actions/onboarding";
@@ -21,7 +22,6 @@ export function SystemStep({
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState<string | null>(null);
   const [identityId, setIdentityId] = useState(identities[0]?.id ?? "");
 
   const suggestion = useMemo(() => {
@@ -45,9 +45,8 @@ export function SystemStep({
   }
 
   function handleContinue() {
-    setError(null);
     if (!name.trim()) {
-      setError("Give your system a name.");
+      toast.error("Give your system a name.");
       return;
     }
     startTransition(async () => {
@@ -55,7 +54,7 @@ export function SystemStep({
         await submitSystemStep({ identityId, name, description: description || undefined });
         router.refresh();
       } catch {
-        setError("Something went wrong saving that. Try again.");
+        toast.error("Something went wrong saving that. Try again.");
       }
     });
   }
@@ -108,10 +107,8 @@ export function SystemStep({
         />
       </div>
 
-      {error && <p className="text-sm text-red-500">{error}</p>}
-
-      <Button onClick={handleContinue} disabled={isPending} className="self-start">
-        {isPending ? "Saving..." : "Continue"}
+      <Button onClick={handleContinue} isLoading={isPending} size="lg" className="self-start">
+        Continue
       </Button>
     </div>
   );
