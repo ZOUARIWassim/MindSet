@@ -34,7 +34,7 @@ export function Select({
         </RadixSelect.Icon>
       </RadixSelect.Trigger>
       <RadixSelect.Portal>
-        <RadixSelect.Content className="overflow-hidden rounded-xl border border-border/60 bg-surface-secondary shadow-elevated data-[state=open]:[animation:slide-down-in_150ms_ease-out] data-[state=closed]:[animation:slide-down-out_100ms_ease-in]">
+        <RadixSelect.Content className="overflow-hidden rounded-2xl border border-border/60 bg-surface-secondary shadow-elevated data-[state=open]:[animation:slide-down-in_150ms_ease-out] data-[state=closed]:[animation:slide-down-out_100ms_ease-in]">
           <RadixSelect.Viewport className="p-1">
             {options.map((option) => (
               <RadixSelect.Item

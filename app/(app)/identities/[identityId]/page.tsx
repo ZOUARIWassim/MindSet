@@ -1,4 +1,5 @@
 import { notFound, redirect } from "next/navigation";
+import { Layers } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/db/client";
 import { findIdentityWithDetailsForUser } from "@/db/repositories/identity";
@@ -91,7 +92,11 @@ export default async function IdentityPage({
       <div className="flex flex-col gap-3">
         <h2 className="text-sm font-medium uppercase tracking-wide text-text-muted">Systems</h2>
         {systems.length === 0 ? (
-          <EmptyState title="No systems yet" description="Systems are the containers for your habits." />
+          <EmptyState
+            icon={Layers}
+            title="No systems yet"
+            description="Systems are the containers for your habits."
+          />
         ) : (
           <SystemList systems={systems} />
         )}

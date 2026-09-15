@@ -60,7 +60,7 @@ export function SignupForm() {
         />
         <p className="text-xs text-text-muted">At least 8 characters.</p>
       </div>
-      {state.error && <p className="text-sm text-red-500">{state.error}</p>}
+      {state.error && <p className="text-sm text-danger">{state.error}</p>}
       <button
         type="submit"
         disabled={isPending}

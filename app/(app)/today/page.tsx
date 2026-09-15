@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { CalendarCheck } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/db/client";
 import { getCheckInForDate, weekEntryCountsForUser } from "@/db/repositories/checkin";
@@ -76,6 +77,7 @@ export default async function TodayPage({
 
       {due.length === 0 ? (
         <EmptyState
+          icon={CalendarCheck}
           title="Nothing due"
           description="Your habits will show up here as soon as they're scheduled for this day."
         />

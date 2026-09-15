@@ -2,16 +2,17 @@
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { Activity, Clock, Link2, Shield, TrendingDown, type LucideIcon } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { dismissInsightAction } from "@/app/actions/insight";
 
-const KIND_LABELS: Record<string, string> = {
-  context_correlation: "Context",
-  time_of_day_comparison: "Timing",
-  declining_system: "System health",
-  metric_correlation: "Correlation",
-  minimum_reliance: "Minimum version",
+const KIND_META: Record<string, { label: string; icon: LucideIcon }> = {
+  context_correlation: { label: "Context", icon: Link2 },
+  time_of_day_comparison: { label: "Timing", icon: Clock },
+  declining_system: { label: "System health", icon: TrendingDown },
+  metric_correlation: { label: "Correlation", icon: Activity },
+  minimum_reliance: { label: "Minimum version", icon: Shield },
 };
 
 function formatEvidenceValue(key: string, value: unknown): string {
@@ -51,23 +52,30 @@ export function InsightCard({
   const evidenceEntries = Object.entries(evidence).filter(
     ([key]) => !["habitId", "systemId", "identityId"].includes(key),
   );
+  const meta = KIND_META[kind];
+  const Icon = meta?.icon ?? Activity;
 
   return (
     <Card data-testid="insight-card" data-insight-id={id}>
       <div className="flex items-start justify-between gap-3">
-        <div>
-          <span className="text-xs font-medium uppercase tracking-wide text-text-muted">
-            {KIND_LABELS[kind] ?? kind}
-          </span>
-          <p className="mt-1 font-medium text-text-primary">{title}</p>
+        <div className="flex items-start gap-3">
+          <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent">
+            <Icon size={16} aria-hidden="true" />
+          </div>
+          <div>
+            <span className="text-xs font-medium uppercase tracking-wide text-text-muted">
+              {meta?.label ?? kind}
+            </span>
+            <p className="mt-0.5 font-medium text-text-primary">{title}</p>
+          </div>
         </div>
-        <Button variant="ghost" onClick={handleDismiss} disabled={isPending}>
+        <Button variant="ghost" size="sm" onClick={handleDismiss} isLoading={isPending}>
           Dismiss
         </Button>
       </div>
       <p className="mt-2 text-sm text-text-secondary">{body}</p>
       {evidenceEntries.length > 0 && (
-        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-text-muted">
+        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 pl-11 text-xs text-text-muted">
           {evidenceEntries.map(([key, value]) => (
             <span key={key}>
               {key}: {formatEvidenceValue(key, value)}
