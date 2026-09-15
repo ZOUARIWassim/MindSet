@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { DialogRoot, DialogTrigger, DialogContent } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { Slider } from "@/components/ui/Slider";
@@ -24,8 +25,8 @@ export interface EditableHabit {
 export function HabitActions({ habit }: { habit: EditableHabit }) {
   const router = useRouter();
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isAbandonOpen, setIsAbandonOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState<string | null>(null);
 
   const [form, setForm] = useState({
     name: habit.name,
@@ -40,7 +41,6 @@ export function HabitActions({ habit }: { habit: EditableHabit }) {
   });
 
   function handleSaveEdit() {
-    setError(null);
     startTransition(async () => {
       try {
         await editHabit(habit.id, {
@@ -57,7 +57,7 @@ export function HabitActions({ habit }: { habit: EditableHabit }) {
         setIsEditOpen(false);
         router.refresh();
       } catch {
-        setError("Couldn't save that. Try again.");
+        toast.error("Couldn't save that. Try again.");
       }
     });
   }
@@ -70,9 +70,6 @@ export function HabitActions({ habit }: { habit: EditableHabit }) {
   }
 
   function handleAbandon() {
-    if (!confirm(`Abandon "${habit.name}"? You can still see its history, but it won't show up on Today.`)) {
-      return;
-    }
     startTransition(async () => {
       await abandonHabit(habit.id);
       router.push("/today");
@@ -101,7 +98,7 @@ export function HabitActions({ habit }: { habit: EditableHabit }) {
               aria-label="Behavior"
               className="rounded-lg border border-border bg-surface-secondary px-3 py-2 text-sm text-text-primary outline-none focus:border-accent"
             />
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
               <input
                 type="number"
                 value={form.targetValue}
@@ -156,9 +153,8 @@ export function HabitActions({ habit }: { habit: EditableHabit }) {
               aria-label="Reason"
               className="rounded-lg border border-border bg-surface-secondary px-3 py-2 text-sm text-text-primary outline-none focus:border-accent"
             />
-            {error && <p className="text-sm text-red-500">{error}</p>}
-            <Button onClick={handleSaveEdit} disabled={isPending} className="self-start">
-              {isPending ? "Saving..." : "Save changes"}
+            <Button onClick={handleSaveEdit} isLoading={isPending} className="self-start">
+              Save changes
             </Button>
           </div>
         </DialogContent>
@@ -167,9 +163,30 @@ export function HabitActions({ habit }: { habit: EditableHabit }) {
       <Button variant="secondary" onClick={handlePause} disabled={isPending}>
         {habit.status === "paused" ? "Resume" : "Pause"}
       </Button>
-      <Button variant="ghost" onClick={handleAbandon} disabled={isPending}>
-        Abandon
-      </Button>
+
+      <DialogRoot open={isAbandonOpen} onOpenChange={setIsAbandonOpen}>
+        <DialogTrigger asChild>
+          <Button variant="ghost" disabled={isPending}>
+            Abandon
+          </Button>
+        </DialogTrigger>
+        <DialogContent title="Abandon this habit?">
+          <div className="flex flex-col gap-4">
+            <p className="text-sm text-text-secondary">
+              &ldquo;{habit.name}&rdquo; will stop showing up on Today. You&apos;ll still be able to see
+              its history on this page - abandoning isn&apos;t deleting.
+            </p>
+            <div className="flex items-center gap-2 self-end">
+              <Button variant="secondary" onClick={() => setIsAbandonOpen(false)}>
+                Cancel
+              </Button>
+              <Button variant="danger" onClick={handleAbandon} isLoading={isPending}>
+                Abandon habit
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </DialogRoot>
     </div>
   );
 }
